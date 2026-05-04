@@ -67,10 +67,23 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
 
     const baseURL = "http://localhost/arms-backend/";
 
-    const showVerificationPanel =
-        member.member_type === "student" &&
-        member.verification_status === "pending" &&
-        !approved; // ✅ Hide panel after approval
+    // const showVerificationPanel =
+    //     member.member_type === "student" &&
+    //     member.verification_status === "pending" &&
+    //     !approved;
+
+    const showVerificationPanel = member.member_type === "student";
+
+    const verificationStatus = member.verification_status?.toLowerCase();
+    let verificationStyle = "text-yellow-600 bg-yellow-50 border-yellow-200";
+
+    if (verificationStatus === "approved") {
+        verificationStyle = "text-green-600 bg-green-50 border-green-200";
+    } else if (verificationStatus === "pending") {
+        verificationStyle = "text-yellow-600 bg-yellow-50 border-yellow-200";
+    } else if (verificationStatus === "rejected") {
+        verificationStyle = "text-red-600 bg-red-50 border-red-200";
+    }
 
     const handleApprove = async () => {
         if (!window.confirm(`Approve student verification for ${member.first_name} ${member.last_name}?`)) return;
@@ -251,8 +264,8 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
                     {showVerificationPanel && (
                         <div className="w-72 border-l px-4 py-4 overflow-y-auto flex-shrink-0 flex flex-col">
                             <h3 className="text-lg font-semibold mb-1">Student Verification</h3>
-                            <p className="text-xs text-yellow-600 bg-yellow-50 border border-yellow-200 rounded px-2 py-1 mb-4">
-                                Pending Review
+                            <p className={`text-xs border rounded px-2 py-1 mb-4 capitalize ${verificationStyle}`}>
+                                {member.verification_status || "-"}
                             </p>
 
                             <div className="space-y-3 flex-1">
