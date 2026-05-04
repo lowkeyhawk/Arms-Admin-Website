@@ -9,7 +9,6 @@ dist/
 .env
 .env.local
 .env.*.local
-src/utils/config.js
 
 # logs
 npm-debug.log*
