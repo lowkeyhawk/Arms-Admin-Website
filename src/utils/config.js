@@ -52,6 +52,9 @@ export const API_ENDPOINTS = {
     // Gym Logo endpoints
     UPLOAD_GYM_LOGO: `${API_BASE_URL}/admin/upload_gym_logo.php`,
     REMOVE_GYM_LOGO: `${API_BASE_URL}/admin/remove_gym_logo.php`,
+
+    APPROVE_VERIFICATION: `${API_BASE_URL}/pages/student/review_verification.php`,
+    SUBMIT_STUDENT_VERIFICATION: `${API_BASE_URL}/pages/student/submit_student_verification.php`,
 };
 
 // Helper to get current IP (for debugging)

@@ -131,17 +131,75 @@ export const membersColumns = (handleView) => [
         label: "Status",
         headerClass: "text-center",
         render: (row) => {
-            const status = row.status || "-"; // fallback if null/undefined
-            let color = "default--status-500"; // default color for -
+            const status = row.status;
+            const vStatus = row.verification_status?.toLowerCase();
+            const memberType = row.member_type?.toLowerCase();
 
-            if (status.toLowerCase() === "active") color = "green--status-500";
-            else if (status.toLowerCase() === "cancelled") color = "red--status-500";
-            else if (status.toLowerCase() === "expiring") color = "yellow--status-500";
+            let displayStatus = status || "-";
+            let color = "default--status-500";
+
+            // =========================
+            // PRIORITY RULES (TOP FIRST)
+            // =========================
+
+            // 1. Rejected (Regular member)
+            if (!status && vStatus === "rejected" && memberType === "regular") {
+                displayStatus = "Rejected";
+                color = "red--status-500";
+            }
+
+            // 2. Pending Approval (Student + pending verification)
+            else if (vStatus === "pending" && memberType === "student") {
+                displayStatus = "Pending Approval";
+                color = "yellow--status-500";
+            }
+
+            // 3. Approved (Student)
+            else if (vStatus === "approved" && memberType === "student" && !status) {
+                displayStatus = "Approved";
+                color = "green--status-500";
+            }
+
+            // 4. Active (Regular or Student approved)
+            else if (
+                (status === "active" && vStatus === "none" && memberType === "regular") ||
+                (status === "active" && vStatus === "approved" && memberType === "student")
+            ) {
+                displayStatus = "Active";
+                color = "green--status-500";
+            }
+
+            // 5. Pending (Regular + none + no status)
+            else if (!status && vStatus === "none" && memberType === "regular") {
+                displayStatus = "Pending";
+                color = "yellow--status-500";
+            }
+
+            // =========================
+            // DEFAULT STATUS HANDLING
+            // =========================
+            else {
+                const safeStatus = status?.toLowerCase();
+
+                if (safeStatus === "active") {
+                    displayStatus = "Active";
+                    color = "green--status-500";
+                } else if (safeStatus === "cancelled") {
+                    displayStatus = "Cancelled";
+                    color = "red--status-500";
+                } else if (safeStatus === "expiring") {
+                    displayStatus = "Expiring";
+                    color = "yellow--status-500";
+                } else if (safeStatus === "pending") {
+                    displayStatus = "Pending";
+                    color = "yellow--status-500";
+                }
+            }
 
             return (
                 <div className="flex justify-center text-center">
                     <span className={`px-2 py-1 rounded ${color}`}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                        {displayStatus.charAt(0).toUpperCase() + displayStatus.slice(1)}
                     </span>
                 </div>
             );

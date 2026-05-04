@@ -12,18 +12,12 @@ function Members() {
     const [viewMember, setViewMember] = useState(null);
     const [isViewOpen, setIsViewOpen] = useState(false);
 
-    // Fetch members from backend
     const fetchMembers = useCallback(async ({ page = 1, limit = 10, search = '', filters = {} }) => {
         try {
             const params = new URLSearchParams();
-
             params.append('page', page);
             params.append('limit', limit);
-
-            if (search) {
-                params.append('search', search);
-            }
-
+            if (search) params.append('search', search);
             if (filters) {
                 Object.keys(filters).forEach((key) => {
                     filters[key].forEach((value) => {
@@ -53,67 +47,59 @@ function Members() {
         }
     }, []);
 
-    // Fetch members payments made
     const fetchPayments = async (memberId) => {
         try {
-            const res = await fetch(
-                `${API_ENDPOINTS.GET_ALL_PAYMENTS}?memberId=${memberId}`
-            );
-
+            const res = await fetch(`${API_ENDPOINTS.GET_ALL_PAYMENTS}?memberId=${memberId}`);
             const data = await res.json();
-
             if (!res.ok || data.status === "error") {
                 throw new Error(data.message || "Failed to fetch payments");
             }
-
-            return {
-                data: data.data || [],
-            };
+            return { data: data.data || [] };
         } catch (err) {
             console.error("Error fetching payments:", err.message);
             return { data: [] };
         }
     };
 
-    // handle save members
     const handleSave = (data) => {
         console.log("Member added:", data);
-        // refresh table here if needed
-
-        // Close dialog
         setShowAddDialog(false);
-
-        // Trigger table reload
         setReloadFlag((prev) => prev + 1);
     };
 
     const handleView = (member) => {
-        console.log(member, 'view');
         setViewMember(member);
         setIsViewOpen(true);
-    }
+    };
+
+    // ✅ Update member in state + refresh table
+    const handleApprove = (userId, updatedMember) => {
+        // Update the currently viewed member so dialog reflects new status
+        setViewMember(updatedMember);
+
+        // Reload the table so the member's status updates in the list
+        setReloadFlag((prev) => prev + 1);
+    };
 
     const columns = membersColumns(handleView);
 
     return (
         <Layout>
             <div className="bg-gray-100">
-                {/* Main Content */}
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-start justify-between gap-8">
                         <div className="mb-2">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                                Members
-                            </h2>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Members</h2>
                             <p className="text-sm text-gray-600 font-medium">
                                 Manage your gym members, memberships, and statuses.
                             </p>
                         </div>
-
                         <div className="flex">
-                            <button type="button"
+                            <button
+                                type="button"
                                 className="btn-primary add--members-btn px-4 py-3 rounded-sm text-sm"
-                                onClick={() => setShowAddDialog(true)}>
+                                onClick={() => setShowAddDialog(true)}
+                            >
                                 + Add Members
                             </button>
                         </div>
@@ -131,7 +117,9 @@ function Members() {
                                     label: "Status",
                                     options: [
                                         { label: "Active", value: "active" },
-                                        { label: "Expiring Soon", value: "expiring soon" },
+                                        { label: "Pending", value: "pending" },
+                                        { label: "Pending Approval", value: "pending_approval" },
+                                        { label: "Expiring", value: "expiring soon" },
                                         { label: "Cancelled", value: "cancelled" },
                                     ],
                                 },
@@ -161,6 +149,7 @@ function Members() {
                 open={isViewOpen}
                 onClose={() => setIsViewOpen(false)}
                 fetchPayments={fetchPayments}
+                onApprove={handleApprove} // ✅ Added
             />
         </Layout>
     );
