@@ -1,0 +1,23 @@
+.sidebar--wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.sidebar--wrapper.bg--main-color {
+    background-color: #141414 !important;
+}
+
+.sidebar--wrapper .menu--link {
+    color: #9CA3AF;
+    border-left: 4px solid transparent;
+    font-weight: 500;
+}
+
+.sidebar--wrapper .menu--link.active--link {
+    color: #FFFFFF;
+    background-color: #1A1A1A !important;
+    border-radius: 8px;
+    border-left: 4px solid #D4AF37;
+    font-weight: 600;
+}

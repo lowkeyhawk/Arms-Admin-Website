@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Inter Font */
+@font-face {
+    font-family: 'Inter';
+    src: url('./assets/fonts/Inter-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./assets/fonts/Inter-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./assets/fonts/Inter-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./assets/fonts/Inter-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* Apply Inter as default font */
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F3F4F7 !important;
+}
+
+input,
+textarea {
+    cursor: text !important;
+}
+
+input,
+textarea,
+select {
+    caret-color: #121B2B !important;
+}
+
+.text-gray-800 {
+    color: #121B2B !important;
+}
+
+.text-gray-600 {
+    color: #6B7280 !important;
+}
+
+.text-red-500 {
+    color: #b11b1b !important;
+}
+
+.rounded-sm {
+    border-radius: 4px !important;
+}
+
+.btn-primary {
+    background-color: #121212;
+    color: #fbcf40 !important;
+}
+
+.btn-danger {
+    color: #B11B1B !important;
+}
+
+.red--bg {
+    background-color: #b11b1b !important;
+}
+
+.yellow--bg {
+    background-color: #ecc23b !important;
+}
+
+.top--page-header {
+    background-color: #fff;
+    padding: 12px 24px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    z-index: 20;
+    left: 256px;
+    right: 0;
+    border-bottom: 1px solid #eeeff1;
+    margin-bottom: 16px;
+}
+
+.main--page-wrapper {
+    margin-left: 256px;
+    margin-top: 60px;
+    padding: 24px;
+}
+
+.text--main {
+    color: #121B2B;
+}
+
+button:disabled {
+    opacity: 0.40;
+    cursor: not-allowed !important;
+}
+
+input:disabled {
+    opacity: .8;
+    cursor: not-allowed !important;
+}
+
+.checked_in {
+    color: #16a34a;
+    font-weight: 500;
+}
+
+.checked_out {
+    color: #D38800;
+    font-weight: 500;
+}
+
+.dialog--wrapper {
+    margin: 16px;
+    max-height: 95%;
+    overflow: auto;
+}
