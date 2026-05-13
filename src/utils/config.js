@@ -10,7 +10,7 @@
 
 // Base URL for your backend
 // export const API_BASE_URL = `http://${API_IP}/ARMS-BACKEND`;
-export const API_BASE_URL = "https://peru-kudu-818436.hostingersite.com";
+export const API_BASE_URL = "https://peru-kudu-818436.hostingersite.com/api";
 
 // Individual endpoints
 export const API_ENDPOINTS = {
