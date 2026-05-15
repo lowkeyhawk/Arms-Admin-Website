@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { API_ENDPOINTS } from "../../../utils/config";
+import { API_ENDPOINTS, API_BASE_URL } from "../../../utils/config";
 
 function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
     const [payments, setPayments] = useState([]);
@@ -65,7 +65,7 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
         return "default--status-500";
     };
 
-    const baseURL = "http://localhost/arms-backend/";
+    const baseURL = `${API_BASE_URL}/`;
 
     // const showVerificationPanel =
     //     member.member_type === "student" &&
