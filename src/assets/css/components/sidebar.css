@@ -17,7 +17,7 @@
 .sidebar--wrapper .menu--link.active--link {
     color: #FFFFFF;
     background-color: #1A1A1A !important;
-    border-radius: 8px;
+    /* border-radius: 8px; */
     border-left: 4px solid #D4AF37;
     font-weight: 600;
 }

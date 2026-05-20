@@ -59,6 +59,7 @@ function Sidebar() {
     const menuItems = [
         { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
         { name: 'Members', path: '/members', icon: 'members' },
+        { name: 'Membership Plans', path: '/plans', icon: 'plans' },
         { name: 'Attendance', path: '/attendance', icon: 'attendance' },
         { name: 'Payments', path: '/payments', icon: 'payments', adminOnly: true },
         { name: 'Staff', path: '/staff', icon: 'staff', adminOnly: true },
@@ -114,7 +115,7 @@ function Sidebar() {
             </div>
 
             {/* Menu Items */}
-            <nav className="flex-1 px-3">
+            <nav className="flex-1">
                 {menuItems.map((item) => {
                     // Hide admin-only items from staff
                     if (item.adminOnly && user?.role !== 'admin') {

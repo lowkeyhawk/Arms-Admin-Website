@@ -6,12 +6,20 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
     const [loading, setLoading] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
     const [approving, setApproving] = useState(false);
+    const [rejecting, setRejecting] = useState(false);
     const [approved, setApproved] = useState(false);
+    const [rejected, setRejected] = useState(false);
+
+    // 🆕 Rejection reason state
+    const [showRejectModal, setShowRejectModal] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState('');
 
     useEffect(() => {
         if (!member || !open) return;
-        // Reset approval state when dialog opens for a new member
         setApproved(false);
+        setRejected(false);
+        setRejectionReason('');
+        setShowRejectModal(false);
 
         const loadPayments = async () => {
             setLoading(true);
@@ -35,13 +43,8 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
         const d = new Date(dateStr);
         if (isNaN(d.getTime())) return "-";
         return showTime
-            ? d.toLocaleString("en-US", {
-                month: "short", day: "2-digit", year: "numeric",
-                hour: "numeric", minute: "2-digit",
-            })
-            : d.toLocaleDateString("en-US", {
-                month: "short", day: "2-digit", year: "numeric",
-            });
+            ? d.toLocaleString("en-US", { month: "short", day: "2-digit", year: "numeric", hour: "numeric", minute: "2-digit" })
+            : d.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
     };
 
     const membershipColor = (membership) => {
@@ -67,36 +70,26 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
 
     const baseURL = `${API_BASE_URL}/`;
 
-    // const showVerificationPanel =
-    //     member.member_type === "student" &&
-    //     member.verification_status === "pending" &&
-    //     !approved;
-
     const showVerificationPanel = member.member_type === "student";
 
     const verificationStatus = member.verification_status?.toLowerCase();
     let verificationStyle = "text-yellow-600 bg-yellow-50 border-yellow-200";
-
-    if (verificationStatus === "approved") {
-        verificationStyle = "text-green-600 bg-green-50 border-green-200";
-    } else if (verificationStatus === "pending") {
-        verificationStyle = "text-yellow-600 bg-yellow-50 border-yellow-200";
-    } else if (verificationStatus === "rejected") {
-        verificationStyle = "text-red-600 bg-red-50 border-red-200";
-    }
+    if (verificationStatus === "approved") verificationStyle = "text-green-600 bg-green-50 border-green-200";
+    else if (verificationStatus === "pending") verificationStyle = "text-yellow-600 bg-yellow-50 border-yellow-200";
+    else if (verificationStatus === "rejected") verificationStyle = "text-red-600 bg-red-50 border-red-200";
 
     const handleApprove = async () => {
         if (!window.confirm(`Approve student verification for ${member.first_name} ${member.last_name}?`)) return;
 
         setApproving(true);
         try {
-            const res = await fetch(`${API_ENDPOINTS.APPROVE_VERIFICATION}`, {
+            const res = await fetch(API_ENDPOINTS.APPROVE_VERIFICATION, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     user_id: parseInt(member.id),
                     action: "approve",
-                    admin_id: 1, // set as default as there is ony 1 admin
+                    admin_id: 1,
                 }),
             });
 
@@ -104,10 +97,7 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
 
             if (data.status === "success") {
                 setApproved(true);
-                if (onApprove) onApprove(member.id, {
-                    ...member,
-                    verification_status: "approved",
-                });
+                if (onApprove) onApprove(member.id, { ...member, verification_status: "approved" });
             } else {
                 alert(data.message || "Approval failed.");
             }
@@ -118,6 +108,48 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
             setApproving(false);
         }
     };
+
+    // 🆕 Handle reject
+    const handleReject = async () => {
+        if (!rejectionReason.trim()) {
+            alert("Please provide a rejection reason.");
+            return;
+        }
+
+        setRejecting(true);
+        try {
+            const res = await fetch(API_ENDPOINTS.APPROVE_VERIFICATION, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: parseInt(member.id),
+                    action: "reject",
+                    admin_id: 1,
+                    rejection_reason: rejectionReason.trim(),
+                }),
+            });
+
+            const data = await res.json();
+
+            if (data.status === "success") {
+                setRejected(true);
+                setShowRejectModal(false);
+                setRejectionReason('');
+                if (onApprove) onApprove(member.id, { ...member, verification_status: "rejected" });
+            } else {
+                alert(data.message || "Rejection failed.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Network error. Please try again.");
+        } finally {
+            setRejecting(false);
+        }
+    };
+
+    const isPending = member.member_type === "student" &&
+        member.verification_status === "pending" &&
+        !approved && !rejected;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -136,22 +168,28 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
                         </span>
                     </div>
 
-                    <div className="flex items-center gap-6">
-                        {/* ✅ Approve button — only shows for pending students */}
-                        { 
-                            member.member_type === "student" &&
-                            member.verification_status === "pending" &&
-                            !approved && (
+                    <div className="flex items-center gap-2">
+                        {/* 🆕 Approve + Reject buttons — only for pending students */}
+                        {isPending && (
+                            <>
                                 <button
                                     onClick={handleApprove}
                                     disabled={approving}
                                     className="bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white text-sm font-semibold px-4 py-2 rounded transition"
                                 >
-                                    {approving ? "Approving..." : "✓ Approve Verification"}
+                                    {approving ? "Approving..." : "✓ Approve"}
                                 </button>
+                                <button
+                                    onClick={() => setShowRejectModal(true)}
+                                    disabled={rejecting}
+                                    className="bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white text-sm font-semibold px-4 py-2 rounded transition"
+                                >
+                                    ✕ Reject
+                                </button>
+                            </>
                         )}
 
-                        <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-2xl font-bold flex items-center">
+                        <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-2xl font-bold flex items-center ml-4">
                             ×
                         </button>
                     </div>
@@ -163,11 +201,18 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
                     {/* LEFT MAIN CONTENT */}
                     <div className="flex-1 overflow-y-auto px-6 py-4">
 
-                        {/* ✅ Approved success banner */}
+                        {/* Success banners */}
                         {approved && (
                             <div className="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 rounded px-4 py-3 text-sm font-medium">
                                 <span>✓</span>
                                 <span>Student verification approved successfully.</span>
+                            </div>
+                        )}
+                        {/* 🆕 Rejected banner */}
+                        {rejected && (
+                            <div className="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded px-4 py-3 text-sm font-medium">
+                                <span>✕</span>
+                                <span>Student verification rejected.</span>
                             </div>
                         )}
 
@@ -260,7 +305,7 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
                         </div>
                     </div>
 
-                    {/* RIGHT SIDE PANEL (STUDENT + PENDING ONLY) */}
+                    {/* RIGHT SIDE PANEL */}
                     {showVerificationPanel && (
                         <div className="w-72 border-l px-4 py-4 overflow-y-auto flex-shrink-0 flex flex-col">
                             <h3 className="text-lg font-semibold mb-1">Student Verification</h3>
@@ -305,13 +350,44 @@ function ViewMemberDialog({ member, open, onClose, fetchPayments, onApprove }) {
                         <button
                             className="absolute top-4 right-4 text-white text-3xl font-bold"
                             onClick={() => setPreviewImage(null)}
-                        >
-                            ×
-                        </button>
+                        >×</button>
                     </div>
                 )}
-
             </div>
+
+            {/* 🆕 Rejection Reason Modal */}
+            {showRejectModal && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-60">
+                    <div className="bg-white rounded shadow-lg w-full max-w-md p-6">
+                        <h3 className="text-lg font-bold mb-1">Reject Verification</h3>
+                        <p className="text-sm text-gray-500 mb-4">
+                            Please provide a reason for rejecting <strong>{member.first_name} {member.last_name}'s</strong> verification.
+                        </p>
+                        <textarea
+                            value={rejectionReason}
+                            onChange={(e) => setRejectionReason(e.target.value)}
+                            placeholder="e.g. ID is blurry, selfie doesn't match ID..."
+                            rows={4}
+                            className="w-full border rounded px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-300"
+                        />
+                        <div className="flex justify-end gap-2 mt-4">
+                            <button
+                                onClick={() => { setShowRejectModal(false); setRejectionReason(''); }}
+                                className="px-4 py-2 border rounded text-sm hover:bg-gray-100"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleReject}
+                                disabled={rejecting || !rejectionReason.trim()}
+                                className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white text-sm font-semibold rounded transition"
+                            >
+                                {rejecting ? "Rejecting..." : "Confirm Reject"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

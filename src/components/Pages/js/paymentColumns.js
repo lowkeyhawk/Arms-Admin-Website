@@ -14,7 +14,7 @@ export const paymentColumns = (handleEdit, handleDelete, handleView) => [
     {
         key: "paid_at",
         label: "Date",
-        width: "12%",
+        width: "14%",
         render: (row) => {
             if (!row.paid_at) return "-"; // show dash if null/undefined
 
@@ -44,7 +44,7 @@ export const paymentColumns = (handleEdit, handleDelete, handleView) => [
     {
         key: "description",
         label: "Description",
-        width: "18%",
+        width: "25%",
         render: (row) => {
             const membership = row.plan_name || null; // null if empty
             let color = "";

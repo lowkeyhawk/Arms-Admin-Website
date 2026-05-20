@@ -1,5 +1,5 @@
 .table--wrapper {    
-    min-height: calc(100vh - 265px);
+    min-height: calc(100vh - 303px);
     background-color: #fff;
     border: 1px solid #f3f4f7 !important;
     /* height: calc(100vh - 315px); */
@@ -131,4 +131,8 @@ table tbody tr td.no--data-wrapper .no--data {
     background-color: #fee7a4 !important;
     color: #121B2B !important;
     font-weight: 500;
+}
+
+.attendance--wrapper .table--wrapper {
+    min-height: calc(100vh - 332px);
 }

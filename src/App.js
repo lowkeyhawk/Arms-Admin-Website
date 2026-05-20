@@ -10,6 +10,7 @@ import Reports from "./components/Pages/Reports";
 import Settings from "./components/Pages/Settings";
 import Attendance from './components/Pages/Attendance';
 import Payments from "./components/Pages/Payments";
+import MembershipPlans from './components/Pages/MembershipPlans';
 
 function App() {
 	return (
@@ -31,6 +32,15 @@ function App() {
 					element={
 						<ProtectedRoute>
 							<Members />
+						</ProtectedRoute>
+					} 
+				/>
+
+				<Route 
+					path="/plans" 
+					element={
+						<ProtectedRoute>
+							<MembershipPlans />
 						</ProtectedRoute>
 					} 
 				/>

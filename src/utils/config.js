@@ -29,6 +29,10 @@ export const API_ENDPOINTS = {
     GET_MEMBERS: `${API_BASE_URL}/pages/get_members.php`,
     GET_MEMBERS_ATTENDANCE: `${API_BASE_URL}/pages/get_members_attendance.php`,
     ATTENDANCE_SUMMARY: `${API_BASE_URL}/pages/attendance_summary.php`,
+    GET_MEMBERSHIP_PLANS: `${API_BASE_URL}/get_membership_plans.php`,
+    ADD_MEMBERSHIP_PLAN: `${API_BASE_URL}/plans/add_membership_plan.php`,
+    EDIT_MEMBERSHIP_PLAN: `${API_BASE_URL}/plans/edit_membership_plan.php`,
+    DELETE_MEMBERSHIP_PLAN: `${API_BASE_URL}/plans/delete_membership_plan.php`,
 
     // PAYMENTS
     GET_ALL_PAYMENTS: `${API_BASE_URL}/pages/payment/all_payments.php`,

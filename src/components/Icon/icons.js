@@ -181,4 +181,13 @@ export const iconLists = {
             <path d="M27.7142 18.8572V37.7143" stroke={fill} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
     ),
+
+    plans: ({ fill }) => (
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M42.8571 1.71436H5.1428C3.24926 1.71436 1.71423 3.24938 1.71423 5.14293V42.8572C1.71423 44.7508 3.24926 46.2858 5.1428 46.2858H42.8571C44.7506 46.2858 46.2857 44.7508 46.2857 42.8572V5.14293C46.2857 3.24938 44.7506 1.71436 42.8571 1.71436Z" stroke={fill} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1.71423 12H46.2857" stroke={fill} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M32.5713 29.1428H15.4285" stroke={fill} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M24 20.5715V37.7144" stroke={fill} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ),
 };

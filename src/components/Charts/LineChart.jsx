@@ -119,6 +119,7 @@ function LineGraph({ data = [], onPeriodChange }) {
                     color: "#E5E7EB",
                     drawBorder: false,
                 },
+                suggestedMax: 10,
                 border: {
                     display: false, // Remove left border
                 },
@@ -127,6 +128,8 @@ function LineGraph({ data = [], onPeriodChange }) {
                     font: {
                         size: 11,
                     },
+                    stepSize: 1,
+                    precision: 0,
                     callback: function(value) {
                         return value;
                     }

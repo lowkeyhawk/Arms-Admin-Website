@@ -280,7 +280,7 @@ function Attendance() {
         <Layout>
             <div className="bg-gray-100">
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-6">
                         <div className="flex items-center justify-between">
                             <div className="mb-2">
                                 <h2 className="text-2xl font-bold text-gray-800 mb-2">
@@ -331,7 +331,7 @@ function Attendance() {
                     </div>
                 </div>
 
-                <div className="mt-6">
+                <div className="mt-6 attendance--wrapper">
                     <GenericTable
                         key={tableKey}
                         columns={columns}

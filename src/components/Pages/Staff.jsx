@@ -117,6 +117,7 @@ function Staff() {
                 setViewStaff(null);
                 setSelectedStaff(null);
                 toast.info("Staff has been deleted.");
+                setReloadFlag((prev) => prev + 1);
             } else {
                 alert(data.message);
             }
